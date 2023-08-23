@@ -1,14 +1,13 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 
 	"google.golang.org/grpc"
-	pb "grpc-example/api/v1"
+	pb "grpc-example/api/v2"
 )
 
 var (
@@ -21,9 +20,18 @@ type server struct {
 }
 
 // SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+func (s *server) SayHello(req *pb.HelloRequest, greeterSayHelloServer pb.Greeter_SayHelloServer) error {
+	log.Printf("Received: %v", req.GetName())
+	for i := 0; i < 10; i++ {
+		err := greeterSayHelloServer.Send(&pb.HelloReply{
+			Code:    200,
+			Message: fmt.Sprintf("hello %s, %d", req.GetName(), i),
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func main() {
@@ -34,7 +42,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterGreeterServer(s, &server{})
-	log.Printf("v1: server listening at %v", lis.Addr())
+	log.Printf("v2: server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
