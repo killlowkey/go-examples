@@ -1,0 +1,9 @@
+2023-08-08 15:34:23.887	info	zap-example/main.go:15	hello world	{"name": "zap"}
+2023-08-08 15:35:48.521	info	zap-example/main.go:15	hello world	{"name": "zap"}
+2023-08-08 15:35:48.573	debug	zap-example/main.go:16	bind address: 	{"host": "127.0.0.1", "port": 8080}
+2023-08-08 15:37:11.762	info	zap-example/main.go:15	hello world	{"name": "zap"}
+2023-08-08 15:37:11.812	debug	zap-example/main.go:16	bind address: 	{"host": "127.0.0.1", "port": 8080}
+2023-08-08 15:37:11.812	info	zap-example/main.go:17	args1={} arg2={}%!(EXTRA int=1, int=2)
+2023-08-08 15:37:47.253	info	zap-example/main.go:15	hello world	{"name": "zap"}
+2023-08-08 15:37:47.296	debug	zap-example/main.go:16	bind address: 	{"host": "127.0.0.1", "port": 8080}
+2023-08-08 15:37:47.296	info	zap-example/main.go:17	args1=1 arg2=2
