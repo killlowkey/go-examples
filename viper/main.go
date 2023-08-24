@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
+	"log"
+	"time"
 )
 
 type Config struct {
@@ -32,9 +35,9 @@ type MySQL struct {
 	Database string `yaml:"database"`
 }
 
-func main() {
-	config := Config{}
+var config Config
 
+func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
@@ -48,7 +51,21 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func main() {
+	// watch 配置文件变化
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		fmt.Println("Config file changed:", e.Name)
+		err := viper.Unmarshal(&config)
+		if err != nil {
+			panic(err)
+		}
+		log.Println("config changed:", config)
+	})
 
 	data, _ := json.MarshalIndent(config, "", "  ")
 	fmt.Println(string(data))
+	time.Sleep(1000 * time.Second)
 }
