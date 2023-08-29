@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"log"
 )
 
@@ -12,7 +14,7 @@ type Product struct {
 }
 
 // AfterFind 在查询之后调用
-func (p *Product) AfterFind(*gorm.DB) error {
+func (p *Product) AfterFind(tx *gorm.DB) error {
 	log.Println("AfterFind: ", ToJson(p))
 	return nil
 }
@@ -53,10 +55,8 @@ func (p *Product) AfterDelete(tx *gorm.DB) error {
 	return nil
 }
 
+// hookExample https://gorm.io/zh_CN/docs/hooks.html
 func hookExample() {
-	//db.Callback().Create().Before("gorm:create").Register("before_create", beforeCreate)
-	//db.Callback().Create().After("gorm:create").Register("after_create", afterCreate)
-
 	// Migrate the schema
 	err := db.AutoMigrate(&Product{})
 	if err != nil {
@@ -90,6 +90,18 @@ func hookExample() {
 	}
 }
 
+func hookCustomExample() {
+	// RegisterDefaultCallbacks
+	err := db.Callback().Create().Before("gorm:create").Register("custom_before_create", func(tx *gorm.DB) {
+		log.Println("custom_before_create: ")
+	})
+	if err != nil {
+		log.Panicln("hookCustomExample create error: ", err)
+	}
+	//db.Callback().Create().After("gorm:create").Register("after_create", afterCreate)
+	db.Create(&Product{Code: UUID(), Price: 100})
+}
+
 // crudExample
 // https://gorm.io/docs/connecting_to_the_database.html#SQLite
 func crudExample() {
@@ -115,4 +127,68 @@ func crudExample() {
 
 	// Delete - delete product
 	db.Delete(&product, 1)
+}
+
+// txAutoExample 闭包自动提交事务，返回 error 则回滚，返回 nil 则提交
+func txAutoExample() {
+	err := db.Transaction(func(tx *gorm.DB) error {
+		// 开启事务
+		err := tx.Create(Product{Code: "T42", Price: 200}).Error
+		if err != nil {
+			return errors.New("product's price is too much")
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		log.Println("transaction error: ", err)
+	}
+}
+
+// txManualExample 手动提交事务
+func txManualExample() {
+	// 开始事务
+	tx := db.Begin()
+	err := tx.Create(&Product{Code: "T42", Price: 200}).Error
+
+	if err != nil {
+		tx.Rollback()
+	} else {
+		tx.Commit()
+	}
+}
+
+func sessionExample() {
+	// DryRun 调试使用，不会清除 SQL 语句
+	session := db.Session(&gorm.Session{DryRun: true})
+	session.Create(&Product{Code: "D42", Price: 100})
+}
+
+func resultExample() {
+	// 返回的 db 禁止复用，会导致 sql 生成有问题
+	tx := db.Create(&Product{Code: "D42", Price: 100})
+
+	// 该 sql 影响行数
+	rowsAffected := tx.RowsAffected
+	log.Println("rows affected: ", rowsAffected)
+
+	// 执行错误，推荐这种方式处理返回错误，record 未发现，返回 gorm.RecordNotFoundError
+	err := tx.Error
+	if err != nil {
+		log.Println(err)
+	}
+
+	// 返回原生记录 record
+	rows, err := tx.Rows()
+	log.Println("rows: ", rows)
+}
+
+func clauseExample() {
+	var (
+		products []Product
+		limit    = 10
+	)
+	// db.Offset(1).Limit(limit).Find(&products)
+	db.Clauses(clause.Limit{Offset: 1, Limit: &limit}).Find(&products)
 }
