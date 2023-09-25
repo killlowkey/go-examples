@@ -13,6 +13,7 @@ type Config struct {
 	Server Server `yaml:"server"`
 	Redis  Redis  `yaml:"redis"`
 	MySQL  MySQL  `yaml:"mysql"`
+	Array  Array  `yaml:"array"`
 }
 
 type Server struct {
@@ -33,6 +34,11 @@ type MySQL struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Database string `yaml:"database"`
+}
+
+type Array struct {
+	Names map[string][]any `yaml:"names"`
+	Ages  []int            `yaml:"ages"`
 }
 
 var config Config
