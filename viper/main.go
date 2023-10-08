@@ -46,7 +46,7 @@ var config Config
 func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
-	viper.AddConfigPath(".")
+	viper.AddConfigPath(".") // 可以指定配置文件的绝对路径
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
