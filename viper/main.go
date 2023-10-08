@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -41,12 +42,27 @@ type Array struct {
 	Ages  []int            `yaml:"ages"`
 }
 
-var config Config
+var (
+	config Config
+	path   string
+)
 
+// init 从命令行读取配置文件路径
+// go run main.go -c /app/test/config.yml
 func init() {
+	flag.StringVar(&path, "c", "/app/config.yml", "config file path")
+	// 必须设置，否则无法读取命令行参数
+	flag.Parse()
+	initViper()
+}
+
+func initViper() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".") // 可以指定配置文件的绝对路径
+	if path != "" {
+		viper.AddConfigPath(path)
+	}
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)

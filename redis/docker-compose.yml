@@ -1,0 +1,13 @@
+version: '3'  # Docker Compose 版本
+
+services:
+  redis:
+    image: "redis:latest"  # 使用最新版本的 Redis 镜像
+    container_name: "my-redis-container"  # 指定容器的名称
+    ports:
+      - "6379:6379"  # 映射 Redis 默认端口
+    volumes:
+      - redis_data:/data  # 将容器内的 Redis 数据目录映射到本地卷
+
+volumes:
+  redis_data:  # 定义一个卷，用于持久化 Redis 数据
