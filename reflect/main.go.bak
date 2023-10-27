@@ -1,0 +1,35 @@
+func main() {
+	commands := &Commands{Name: "Commands"}
+
+	// 通过反射获取结构体的类型，获取字段和方法信息
+	valueType := reflect.TypeOf(commands)
+
+	// 通过反射获取结构体的值,值用于获取值，调用方法
+	value := reflect.ValueOf(commands)
+
+	// 获取 Add 方法的名称
+	methodName := "Cmd903"
+
+	// 获取所有方法
+	for i := 0; i < valueType.NumMethod(); i++ {
+		method := valueType.Method(i)
+		log.Printf("方法名称: %s\n", method.Name)
+		log.Printf("方法类型: %s\n\n", method.Type)
+	}
+
+	// 通过方法名称获取方法
+	method := value.MethodByName(methodName)
+
+	if method.IsValid() {
+		// 准备方法的参数
+		// var args []reflect.Value
+		args := []reflect.Value{reflect.ValueOf("commands")}
+		// 调用方法并获取结果
+		result := method.Call(args)
+
+		// 打印结果
+		fmt.Printf("调用 %s 方法的结果: %v\n", methodName, result[0].Interface())
+	} else {
+		fmt.Printf("找不到方法：%s\n", methodName)
+	}
+}
