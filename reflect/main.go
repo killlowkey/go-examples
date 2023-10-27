@@ -12,8 +12,8 @@ type Commands struct {
 }
 
 func (c *Commands) Cmd903(name string) (string, error) {
-	log.Printf("My methodName is %s\n", name)
-	return "My methodName is cmd903", nil
+	log.Printf("My name is %s\n", name)
+	return "My name is cmd903", nil
 }
 
 type Reflector struct {
@@ -69,7 +69,7 @@ func (r *Reflector) Call(methodName string, args []reflect.Value) ([]reflect.Val
 	// 查询方法是否存在
 	methodInfo, ok := r.cache[methodName]
 	if !ok {
-		return nil, errors.New(fmt.Sprintf("method %s not found", methodName))
+		return nil, fmt.Errorf("method %s not found", methodName)
 	}
 
 	// 调用方法
