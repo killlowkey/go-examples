@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"time"
 )
 
@@ -44,6 +45,25 @@ func (a *AddressDetail) Scan(value interface{}) error {
 	return err
 }
 
+// GormDataType gorm common data type
+// 自定义类型必须实现 GormDataType 方法，或者在 tag 中指定类型
+func (AddressDetail) GormDataType() string {
+	return "json"
+}
+
+// GormDBDataType gorm db data type
+func (AddressDetail) GormDBDataType(db *gorm.DB, field *schema.Field) string {
+	switch db.Dialector.Name() {
+	case "sqlite":
+		return "JSON"
+	case "mysql":
+		return "JSON"
+	case "postgres":
+		return "JSONB"
+	}
+	return ""
+}
+
 // BizCustomer 业务客户
 // https://github.com/go-gorm/datatypes
 // https://gorm.io/zh_CN/docs/data_types.html
@@ -53,9 +73,10 @@ type BizCustomer struct {
 	// 表示 json 必须要使用自定义类型，mysql5.x 不支持 json 类型
 	// 如果强制修改 datatypes.JSON 中的 GormDBDataType 方法，会导致 json 查询失效，因为 json 对应的函数不存在
 	// 比如在 mysql5.7 将 GormDBDataType 修改为 longtext，datatypes.JSONQuery 查询失效
-	Address       datatypes.JSON `json:"address" gorm:"column:address"`
-	Detail        datatypes.JSON `json:"detail" gorm:"column:detail"`
-	AddressDetail AddressDetail  `json:"addressDetail" gorm:"column:address_detail;type:json"`
+	Address datatypes.JSON `json:"address" gorm:"column:address"`
+	Detail  datatypes.JSON `json:"detail" gorm:"column:detail"`
+	//AddressDetail AddressDetail  `json:"addressDetail" gorm:"column:address_detail;type:json"`
+	AddressDetail AddressDetail `json:"addressDetail" gorm:"column:address_detail"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
@@ -88,7 +109,7 @@ func jsonExample() {
 			"phone": "123456789",
 			"email": "2860072080@gmail.com",
 		})),
-		AddressDetail: []string{"Moscow", "Krasnodar"},
+		AddressDetail: []string{"Moscow", "Krasnodar", "China"},
 	}
 	db.Create(&customer)
 
@@ -104,12 +125,15 @@ func jsonExample() {
 	//db.First(&customerFromDb2, customer.ID)
 	//println(ToJsonWithIndent(customerFromDb2))
 
+	customer.AddressDetail = append(customer.AddressDetail, "Sochi")
+	db.Save(&customer)
+
 	var customerFromDb3 BizCustomer
 	db.Where("id = ?", customer.ID).First(&customerFromDb3, datatypes.JSONQuery("detail").HasKey("phone"))
 	println(ToJsonWithIndent(customerFromDb3))
 
 	// 查询不到
-	var customerFromDb4 BizCustomer
-	db.Where("id = ?", customer.ID).First(&customerFromDb4, datatypes.JSONQuery("detail").HasKey("phone1"))
-	println(ToJsonWithIndent(customerFromDb4))
+	//var customerFromDb4 BizCustomer
+	//db.Where("id = ?", customer.ID).First(&customerFromDb4, datatypes.JSONQuery("detail").HasKey("phone1"))
+	//println(ToJsonWithIndent(customerFromDb4))
 }
