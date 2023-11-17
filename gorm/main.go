@@ -26,7 +26,7 @@ func initSQLite() {
 // initMySQL go get -u gorm.io/driver/mysql
 func initMySQL() {
 	var err error
-	dsn := "root:rootitc123@tcp(172.16.60.77:3306)/gva?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(172.16.60.77:3307)/gva?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -36,8 +36,8 @@ func initMySQL() {
 }
 
 func init() {
-	initSQLite()
-	//initMySQL()
+	//initSQLite()
+	initMySQL()
 }
 
 func main() {
