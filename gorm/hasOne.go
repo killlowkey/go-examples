@@ -36,7 +36,8 @@ func hasOneExample() {
 
 	// 查询
 	var res User
-	err = db.Model(&User{}).Preload("Company").First(&res).Where("id = ?", 1).Error
+	// Where("id = ?", 1)
+	err = db.Model(&User{}).Preload("Company").First(&res, 1).Error
 	if err != nil {
 		panic(err)
 	}
