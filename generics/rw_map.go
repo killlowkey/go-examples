@@ -1,6 +1,9 @@
 package generics
 
-import "sync"
+import (
+	"errors"
+	"sync"
+)
 
 type RwMap[K comparable, V any] struct {
 	rwLock sync.RWMutex
@@ -98,7 +101,11 @@ func (m *RwMap[K, V]) Clone() *RwMap[K, V] {
 	return newMap
 }
 
-func (m *RwMap[K, V]) Merge(other *RwMap[K, V]) {
+func (m *RwMap[K, V]) Merge(other *RwMap[K, V]) error {
+	if other == nil {
+		return errors.New("other map is nil")
+	}
+
 	m.rwLock.Lock()
 	defer m.rwLock.Unlock()
 
@@ -109,4 +116,5 @@ func (m *RwMap[K, V]) Merge(other *RwMap[K, V]) {
 		m.Insert(k, v)
 		return true
 	})
+	return nil
 }
