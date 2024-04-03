@@ -1,6 +1,9 @@
 package generics
 
-import "testing"
+import (
+	"sort"
+	"testing"
+)
 
 // cd generics && go test .
 
@@ -41,5 +44,90 @@ func TestRwMap_Get(t *testing.T) {
 	}
 	if value != "" {
 		t.Errorf("Get() returned %v, want %v", value, "")
+	}
+}
+
+func TestRwMap_Delete(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	res := m.Delete(1)
+	if res != "one" {
+		t.Errorf("Delete() returned %v, want %v", res, "one")
+	}
+
+	value, ok := m.Get(1)
+	if ok {
+		t.Error("Get() returned true, want false")
+	}
+	if value != "" {
+		t.Errorf("Get() returned %v, want %v", value, "")
+	}
+}
+
+func TestRwMap_Len(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+	if m.Len() != 3 {
+		t.Errorf("Len() returned %v, want %v", m.Len(), 3)
+	}
+}
+
+func TestRwMap_Range(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+
+	count := 0
+	m.Range(func(key int, value string) bool {
+		count++
+		return true
+	})
+	if count != 3 {
+		t.Errorf("Range() called %v times, want %v", count, 3)
+	}
+
+	count = 0
+	m.Range(func(key int, value string) bool {
+		count++
+		return false
+	})
+	if count != 1 {
+		t.Errorf("Range() called %v times, want %v", count, 1)
+	}
+}
+
+func TestRwMap_Clear(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+
+	m.Clear()
+	if m.Len() != 0 {
+		t.Errorf("Clear() did not clear the map")
+	}
+}
+
+func TestRwMap_Keys(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+
+	keys := m.Keys()
+	if len(keys) != 3 {
+		t.Errorf("Keys() returned %v keys, want %v", len(keys), 3)
+	}
+
+	// 对 keys 进行排序, 然后比较
+	sort.Ints(keys)
+
+	for i, key := range keys {
+		if key != i+1 {
+			t.Errorf("Keys() returned key %v, want %v", key, i+1)
+		}
 	}
 }
