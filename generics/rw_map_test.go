@@ -169,3 +169,23 @@ func TestRwMap_Concurrent(t *testing.T) {
 		}(i)
 	}
 }
+
+// bench 测试
+func BenchmarkRwMap_Insert(b *testing.B) {
+	m := NewRwMap[int, string]()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.Insert(i, "value")
+	}
+}
+
+func BenchmarkRwMap_Get(b *testing.B) {
+	m := NewRwMap[int, string]()
+	for i := 0; i < b.N; i++ {
+		m.Insert(i, "value")
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		m.Get(i)
+	}
+}
