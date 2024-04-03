@@ -75,3 +75,38 @@ func (m *RwMap[K, V]) Keys() []K {
 	}
 	return keys
 }
+
+func (m *RwMap[K, V]) Values() []V {
+	m.rwLock.RLock()
+	defer m.rwLock.RUnlock()
+
+	values := make([]V, 0, len(m.data))
+	for _, v := range m.data {
+		values = append(values, v)
+	}
+	return values
+}
+
+func (m *RwMap[K, V]) Clone() *RwMap[K, V] {
+	m.rwLock.RLock()
+	defer m.rwLock.RUnlock()
+
+	newMap := NewRwMap[K, V]()
+	for k, v := range m.data {
+		newMap.Insert(k, v)
+	}
+	return newMap
+}
+
+func (m *RwMap[K, V]) Merge(other *RwMap[K, V]) {
+	m.rwLock.Lock()
+	defer m.rwLock.Unlock()
+
+	other.rwLock.RLock()
+	defer other.rwLock.RUnlock()
+
+	other.Range(func(k K, v V) bool {
+		m.Insert(k, v)
+		return true
+	})
+}

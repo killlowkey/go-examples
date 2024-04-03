@@ -131,3 +131,41 @@ func TestRwMap_Keys(t *testing.T) {
 		}
 	}
 }
+
+func TestRwMap_Values(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+
+	values := m.Values()
+	if len(values) != 3 {
+		t.Errorf("Values() returned %v values, want %v", len(values), 3)
+	}
+}
+
+func TestRwMap_Clone(t *testing.T) {
+	m := NewRwMap[int, string]()
+	m.Insert(1, "one")
+	m.Insert(2, "two")
+	m.Insert(3, "three")
+
+	clone := m.Clone()
+	if clone.Len() != 3 {
+		t.Errorf("Clone() returned map with %v entries, want %v", clone.Len(), 3)
+	}
+
+	clone.Delete(1)
+	if m.Len() != 3 {
+		t.Errorf("Clone() did not create a deep copy")
+	}
+}
+
+func TestRwMap_Concurrent(t *testing.T) {
+	m := NewRwMap[int, string]()
+	for i := 0; i < 1000; i++ {
+		go func(i int) {
+			m.Insert(i, "value")
+		}(i)
+	}
+}
