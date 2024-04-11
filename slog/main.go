@@ -50,6 +50,7 @@ func AppendCtx(parent context.Context, attr slog.Attr) context.Context {
 // main https://betterstack.com/community/guides/logging/logging-in-go/
 // https://github.com/samber/slog-gin
 // https://betterstack.com/logs
+// slog 提案：https://go.googlesource.com/proposal/+/master/design/56345-structured-logging.md
 func main() {
 	flog, err := os.OpenFile("F:\\go-examples\\slog\\logs\\app.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
