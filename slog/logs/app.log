@@ -1,0 +1,38 @@
+time=2024-04-11T10:55:47.968+08:00 level=INFO msg="Hello, world!" requestId=xxxxxx
+time=2024-04-11T10:55:47.988+08:00 level=ERROR msg="This is an error message" error="something went wrong"
+time=2024-04-11T10:55:47.989+08:00 level=INFO msg="This is a message with context"
+time=2024-04-11T10:55:47.989+08:00 level=INFO msg="This is a message with attributes" key=value
+time=2024-04-11T10:57:52.685+08:00 level=INFO msg="Hello, world!" requestId=xxxxxx
+time=2024-04-11T10:57:52.706+08:00 level=ERROR msg="This is an error message" error="something went wrong"
+time=2024-04-11T10:57:52.706+08:00 level=INFO msg="This is a message with context"
+time=2024-04-11T10:57:52.707+08:00 level=INFO msg="This is a message with attributes" key=value
+time=2024-04-11T13:55:30.150+08:00 level=INFO msg="I am default slog logger"
+time=2024-04-11T13:55:30.170+08:00 level=INFO msg="Hello, world!" requestId=f93eb275-fc39-4556-ad7d-94bbecb0c7bc
+time=2024-04-11T13:55:30.170+08:00 level=ERROR msg="This is an error message" error="something went wrong"
+time=2024-04-11T13:55:30.170+08:00 level=INFO msg="This is a message with context"
+time=2024-04-11T13:55:30.170+08:00 level=INFO msg="This is a message with attributes" key=value
+time=2024-04-11T13:55:30.170+08:00 level=INFO msg="image uploaded" id=23123 properties.width=4000 properties.height=3000 properties.format=jpeg
+time=2024-04-11T13:55:30.171+08:00 level=INFO msg="read file form client" requestId=f93eb275-fc39-4556-ad7d-94bbecb0c7bc
+{"time":"2024-04-11T13:55:53.2715562+08:00","level":"INFO","msg":"I am default slog logger"}
+{"time":"2024-04-11T13:55:53.2955654+08:00","level":"INFO","msg":"Hello, world!","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T13:55:53.2960695+08:00","level":"ERROR","msg":"This is an error message","error":"something went wrong"}
+{"time":"2024-04-11T13:55:53.2960992+08:00","level":"INFO","msg":"This is a message with context"}
+{"time":"2024-04-11T13:55:53.2960992+08:00","level":"INFO","msg":"This is a message with attributes","key":"value"}
+{"time":"2024-04-11T13:55:53.2960992+08:00","level":"INFO","msg":"image uploaded","id":23123,"properties":{"width":4000,"height":3000,"format":"jpeg"}}
+{"time":"2024-04-11T13:55:53.2966282+08:00","level":"INFO","msg":"read file form client","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T14:03:24.3624318+08:00","level":"INFO","msg":"I am default slog logger"}
+{"time":"2024-04-11T14:03:24.3871132+08:00","level":"INFO","msg":"Hello, world!","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T14:03:24.3871132+08:00","level":"ERROR","msg":"This is an error message","error":"something went wrong"}
+{"time":"2024-04-11T14:03:24.3871132+08:00","level":"INFO","msg":"This is a message with context"}
+{"time":"2024-04-11T14:03:24.3871132+08:00","level":"INFO","msg":"This is a message with attributes","key":"value"}
+{"time":"2024-04-11T14:03:24.3871132+08:00","level":"INFO","msg":"image uploaded","id":23123,"properties":{"width":4000,"height":3000,"format":"jpeg"}}
+{"time":"2024-04-11T14:03:24.3876388+08:00","level":"INFO","msg":"read file form client","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T14:17:57.268668+08:00","level":"INFO","msg":"I am default slog logger"}
+{"time":"2024-04-11T14:17:57.289613+08:00","level":"INFO","msg":"Hello, world!","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T14:17:57.289613+08:00","level":"ERROR","msg":"This is an error message","error":"something went wrong"}
+{"time":"2024-04-11T14:17:57.2901166+08:00","level":"INFO","msg":"This is a message with context"}
+{"time":"2024-04-11T14:17:57.290182+08:00","level":"INFO","msg":"This is a message with attributes","key":"value"}
+{"time":"2024-04-11T14:17:57.290182+08:00","level":"INFO","msg":"image uploaded","id":23123,"properties":{"width":4000,"height":3000,"format":"jpeg"}}
+{"time":"2024-04-11T14:17:57.290182+08:00","level":"INFO","msg":"read file form client","requestId":"f93eb275-fc39-4556-ad7d-94bbecb0c7bc"}
+{"time":"2024-04-11T14:18:24.462684+08:00","level":"ERROR","msg":"This is an error message","error":"something went wrong"}
+{"time":"2024-04-11T14:19:54.519589+08:00","level":"ERROR","msg":"This is an error message","error":"something went wrong"}
