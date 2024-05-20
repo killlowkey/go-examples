@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -75,6 +77,62 @@ func (r *Reflector) Call(methodName string, args []reflect.Value) ([]reflect.Val
 	// 调用方法
 	log.Printf("调用 %s struct 的 %s 方法, 参数 %v\n", methodInfo.structName, methodInfo.methodName, args)
 	return methodInfo.methodValue.Call(args), nil
+}
+
+func CallMethod() {
+	// JSON 输入
+	jsonStr := `{"name":"John"}`
+
+	// 动态创建 HelloWorld 实例
+	helloWorld := &HelloWorld{}
+
+	// 获取 Greeting 方法
+	method := reflect.ValueOf(helloWorld).MethodByName("Greeting")
+	if !method.IsValid() {
+		fmt.Println("Method not found")
+		return
+	}
+
+	// 动态获取 Request 和 Response 的类型
+	reqType := method.Type().In(1).Elem()
+	rspType := method.Type().In(2).Elem()
+
+	// 动态创建 Request 和 Response 的实例
+	req := reflect.New(reqType).Interface()
+	rsp := reflect.New(rspType).Interface()
+
+	// 解析 JSON 到 Request 实例
+	if err := json.Unmarshal([]byte(jsonStr), req); err != nil {
+		fmt.Println("Error unmarshalling JSON:", err)
+		return
+	}
+
+	// 准备方法参数
+	ctx := context.Background()
+	in := []reflect.Value{
+		reflect.ValueOf(ctx),
+		reflect.ValueOf(req),
+		reflect.ValueOf(rsp),
+	}
+
+	// 调用方法
+	results := method.Call(in)
+
+	// 检查返回值
+	if len(results) != 1 {
+		fmt.Println("Unexpected number of return values")
+		return
+	}
+
+	// 检查是否有错误返回
+	if err := results[0].Interface(); err != nil {
+		fmt.Println("Method returned error:", err)
+		return
+	}
+
+	// 获取并输出 Response 内容
+	responseMessage := reflect.ValueOf(rsp).Elem().FieldByName("Message").String()
+	fmt.Println("Response message:", responseMessage)
 }
 
 func main() {
