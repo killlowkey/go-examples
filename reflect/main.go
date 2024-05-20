@@ -79,6 +79,21 @@ func (r *Reflector) Call(methodName string, args []reflect.Value) ([]reflect.Val
 	return methodInfo.methodValue.Call(args), nil
 }
 
+type Request struct {
+	Name string `json:"name"`
+}
+
+type Response struct {
+	Message string `json:"message"`
+}
+
+type HelloWorld struct{}
+
+func (h *HelloWorld) Greeting(ctx context.Context, req *Request, rsp *Response) error {
+	rsp.Message = "Hello " + req.Name
+	return nil
+}
+
 func CallMethod() {
 	// JSON 输入
 	jsonStr := `{"name":"John"}`
@@ -153,4 +168,6 @@ func main() {
 	res2 := res[1].Interface()
 	log.Printf("call result1: %v\n", res1)
 	log.Printf("call result2: %v\n", res2)
+
+	CallMethod()
 }
